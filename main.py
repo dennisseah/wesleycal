@@ -116,9 +116,7 @@ class AccountHandler(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('home.html')
             self.response.write(template.render({
                 'name': user.nickname(), 
-                "logouturl": users.create_logout_url('/'),
-                "hasPlanners" : hasPlanners(user),
-                "hasPhotos" : hasPhotos(user)
+                "logouturl": users.create_logout_url('/')
             }))
         else:
             self.redirect('/')
@@ -202,6 +200,20 @@ class PhotoServiceHandler(webapp2.RequestHandler):
         photos = getPhotos(users.get_current_user())
         self.response.write(json.dumps(photos))
 
+    def delete(self, id):
+        user = users.get_current_user()
+        entry = ndb.Key(urlsafe=id).get()
+        if entry is None:
+            self.response.write('not found')
+            self.response.set_status(400)
+        elif entry.creator == user.user_id():
+            ndb.Key(urlsafe=id).delete()
+        else:
+            self.response.write('not found')
+            self.response.set_status(400)
+
+
+
 class SinglePhotoServiceHandler(webapp2.RequestHandler):
     def get(self, id):
         photo = getPhoto(users.get_current_user(), id)
@@ -218,6 +230,7 @@ app = webapp2.WSGIApplication([
     ('/services/planners/', PlannerServiceHandler),
     ('/services/planners/([^/]+)', PlannerServiceHandler),
     ('/services/photos/', PhotoServiceHandler),
+    ('/services/photos/([^/]+)', PhotoServiceHandler),
     ('/services/photo/([^/]+)', SinglePhotoServiceHandler)
 ], debug=True)
 

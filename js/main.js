@@ -84,18 +84,35 @@ function fetchPhotos(force) {
 }
 
 function delPlanner(oBtn, id) {
-	$(oBtn).prop('disabled', true);
+    $(oBtn).prop('disabled', true);
     $.ajax({
         type: 'delete',
         url: '/services/planners/' + id,
         success: function (data) {
-        	showSuccess('Planner is deleted');
+            showSuccess('Planner is deleted');
             setTimeout(function() {
                 fetchPlanners(true);    
             }, 500);
         },
         error: function(jqXHR, textStatus, errorThrown){
-        	showError(textStatus);
+            showError(textStatus);
+        }
+    });
+}
+
+function delPhoto(oBtn, id) {
+    $(oBtn).prop('disabled', true);
+    $.ajax({
+        type: 'delete',
+        url: '/services/photos/' + id,
+        success: function (data) {
+            showSuccess('Picture is deleted');
+            setTimeout(function() {
+                fetchPhotos(true);    
+            }, 500);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            showError(textStatus);
         }
     });
 }
@@ -116,6 +133,9 @@ $("#fileinput").fileinput({
 
 $("#fileinput").on('fileuploaded', function() {
     fetchPhotos(true);
+    setTimeout(function() {
+        $('#fileinput').fileinput('clear');
+    }, 1000);
 });
 
 $('#btnOpenDlgPhoto').on('click', function() {
@@ -148,7 +168,7 @@ $('#btnCreatePlanner').on('click', function() {
         	showSuccess('Planner is created');
             setTimeout(function() {
                 fetchPlanners(true);    
-            }, 500);
+            }, 1000);
         },
         error: function(jqXHR, textStatus, errorThrown){
         	showError(jqXHR.responseText);
