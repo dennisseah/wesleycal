@@ -1,6 +1,7 @@
 function hideAllViews() {
     $('#homeview').hide();
     $('#plannerView').hide();
+    $('#photoView').hide();
 }
 
 function addLocationTag(tag) {
@@ -48,6 +49,40 @@ function showSuccess(message) {
 	alertShow($('#alertSuccess'), message);
 }
 
+function fetchPlanners(force) {
+    if (!force && planners) {
+        return;
+    }
+    $.ajax({
+        type: 'get',
+        url: '/services/planners/',
+        dataType: 'json',
+        success: function (data) {
+            addPlanners(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            showError(textStatus);
+        }
+    });    
+}
+
+function fetchPhotos(force) {
+    if (!force && photos) {
+        return;
+    }
+    $.ajax({
+        type: 'get',
+        url: '/services/photos/',
+        dataType: 'json',
+        success: function (data) {
+            addPhotos(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            showError(textStatus);
+        }
+    });    
+}
+
 function delPlanner(oBtn, id) {
 	$(oBtn).prop('disabled', true);
     $.ajax({
@@ -55,15 +90,16 @@ function delPlanner(oBtn, id) {
         url: '/services/planners/' + id,
         success: function (data) {
         	showSuccess('Planner is deleted');
-        	setTimeout(function() {
-        		location.reload(true);
-        	}, 1000);
+            setTimeout(function() {
+                fetchPlanners(true);    
+            }, 500);
         },
         error: function(jqXHR, textStatus, errorThrown){
         	showError(textStatus);
         }
     });
 }
+
 
 $(".nav a").on("click", function(){
     $(".nav").find(".active").removeClass("active");
@@ -76,6 +112,10 @@ $("#fileinput").fileinput({
     allowedFileExtensions: ['png', 'jpg','jpeg'],
     maxFileSize: 2500,
 	maxFileCount: 1
+});
+
+$("#fileinput").on('fileuploaded', function() {
+    fetchPhotos(true);
 });
 
 $('#btnOpenDlgPhoto').on('click', function() {
@@ -106,9 +146,9 @@ $('#btnCreatePlanner').on('click', function() {
         contentType: "application/json; charset=utf-8",
         success: function (data) {
         	showSuccess('Planner is created');
-        	setTimeout(function() {
-        		location.reload(true);
-        	}, 1000);
+            setTimeout(function() {
+                fetchPlanners(true);    
+            }, 500);
         },
         error: function(jqXHR, textStatus, errorThrown){
         	showError(jqXHR.responseText);
@@ -157,4 +197,6 @@ function selectNav() {
 
 }
 
+fetchPlanners();
+fetchPhotos();
 selectNav();

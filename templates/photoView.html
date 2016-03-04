@@ -1,9 +1,26 @@
 <div id="photoView" class="container collapse">
-    <div class="panel panel-default">
-        <div class="panel-heading"><h4>Picture Collection</h4></div>
-        <div class="panel-body">
-            <label class="control-label">Select File</label>
-            <input id="fileinput" type="file" class="file">
-        </div>    
-    </div>
+	<div class="row">
+	    <div class="col-md-7">
+		    <div class="panel panel-default">
+		        <div class="panel-heading"><h4>Collection</h4></div>
+		        <div class="panel-body">
+		            {% if hasPhotos %}
+		                <ul id="listPhotos" class="list-group">
+		                </ul>
+		            {% else %}
+		                <p>You do not have any pictures. </p>
+		            {% endif %}
+		        </div>
+		    </div>
+		</div>
+		<div class="col-md-5">
+		    <div class="panel panel-default">
+		        <div class="panel-heading"><h4>Upload</h4></div>
+		        <div class="panel-body">
+		            <label class="control-label">Select File</label>
+		            <input id="fileinput" type="file" class="file">
+		        </div>    
+		    </div>
+		</div>
+	</div>
 </div>

@@ -9,19 +9,11 @@
                 </button>
             </p>
 
-            {% if schedules|length == 0 %}
-                    <p> You do not have any planners. </p>
-            {% endif %}
-
-            {% if schedules|length > 0 %}
+            {% if hasPlanners %}
                 <ul id="listPlanners" class="list-group">
-                    <script>
-                    {% for p in schedules %}
-                    addPlanner("{{ p['key'] }}", "{{ p['creator'] }}", "{{ p['name'] }}", "{{ p['description'] }}", "{{ p['creationdate'] }}");
-                    {% endfor %}
-                    insertPlanners();
-                    </script>
                 </ul>
+            {% else %}
+                <p>You do not have any planners. </p>
             {% endif %}
         </div>
     </div>

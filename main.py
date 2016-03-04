@@ -46,21 +46,28 @@ def getPhotos(user):
     # )
 
     query = PhotoEntry.query(PhotoEntry.creator == user.user_id()).order(PhotoEntry.name)
-    entries = query.fetch(100)
+    entries = query.fetch(100, projection=[PhotoEntry.name, PhotoEntry.contenttype, PhotoEntry.date])
 
     photos = []
     for p in entries:
         photos.append({
             "key": p.key.urlsafe(),
             "name": p.name,
-            "creator": p.creator,
             "contenttype": p.contenttype,
             "creationdate": str(p.date)
         });
     return photos
 
 def getPhoto(user, id):
-    return ndb.Key(urlsafe=id).get()
+    p = ndb.Key(urlsafe=id).get()
+    if p and p.creator != user.user_id():
+        return None
+    return p
+
+def hasPhotos(user):
+    query = PhotoEntry.query(PhotoEntry.creator == user.user_id())
+    return query.count(keys_only=True) > 0
+
 
 def getPlanners(user):
     planner_query = PlannerEntry.query(PlannerEntry.creator == user.user_id()).order(PlannerEntry.name)
@@ -76,6 +83,11 @@ def getPlanners(user):
             "creationdate": str(p.date)
         });
     return schedules
+
+def hasPlanners(user):
+    query = PlannerEntry.query(PlannerEntry.creator == user.user_id())
+    return query.count(keys_only=True) > 0
+
 
 def isPlannerExist(user, name):
     planner_query = PlannerEntry.query(PlannerEntry.creator == user.user_id() and PlannerEntry.name == name).order(PlannerEntry.name)
@@ -101,14 +113,12 @@ class AccountHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            ndb.delete_multi(
-                PhotoEntry.query().fetch(keys_only=True)
-            )
             template = JINJA_ENVIRONMENT.get_template('home.html')
             self.response.write(template.render({
                 'name': user.nickname(), 
                 "logouturl": users.create_logout_url('/'),
-                "schedules" : getPlanners(user)
+                "hasPlanners" : hasPlanners(user),
+                "hasPhotos" : hasPhotos(user)
             }))
         else:
             self.redirect('/')

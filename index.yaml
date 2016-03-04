@@ -15,6 +15,18 @@ indexes:
   - name: creator
   - name: name
 
+- kind: PhotoEntry
+  properties:
+  - name: creator
+  - name: name
+  - name: contenttype
+  - name: date
+
+- kind: PhotoEntryBrief
+  properties:
+  - name: creator
+  - name: name
+
 - kind: PlannerEntry
   properties:
   - name: creator
