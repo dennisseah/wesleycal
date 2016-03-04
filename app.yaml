@@ -1,0 +1,46 @@
+application: dennisseah
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /sapui5
+  static_dir: sapui5
+
+- url: /polymer
+  static_dir: polymer
+
+- url: /bootstrap
+  static_dir: bootstrap
+
+- url: /fileinput
+  static_dir: fileinput
+
+- url: /css
+  static_dir: css
+
+- url: /js
+  static_dir: js
+
+- url: /account/.*
+  script: main.app
+
+- url: .*
+  script: main.app
+
+- url: /services/.*
+  script: main.app
+  login: required
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+
+

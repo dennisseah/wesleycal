@@ -1,0 +1,34 @@
+<div id="homeview">
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Pictorial Planner</h1>
+            <p>Help you to plan activities for your kids.</p>
+            {% if loginurl %}
+            <p><a class="btn btn-primary" href="{{ loginurl }}" role="button">Login</a> with Google account to get started.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>How does it work?</h2>
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Create an planner</h2>
+                <p>Have a planner for an individual. Enter a name of the planner. Typically, it is the kid's
+                name. And optionally enter a description for the planner.</p>
+            </div>
+            <div class="col-md-4">
+                <h2>Upload Pictures</h2>
+                <p>Create a set of pictures for the planner. Picture can be a person, things, etc. 
+                They help your kid to know the activities ahead of time.</p>
+            </div>
+            <div class="col-md-4">
+                <h2>Setup the schedule</h2>
+                <p>Plan the schedule by adding pictures and setting up duration for each activities.
+                Some tasks are repeatable tasks while others are not. You have the flexibility to 
+                plan the schedule accordingly.</p>
+            </div>
+        </div>
+    </div>
+</div>

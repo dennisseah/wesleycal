@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'header.html' %}
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Wesley Planner</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li id="navHome"><a href="javascript:showHomeView()">Home</a></li>
+                        <li id="navPlanner"><a href="javascript:showPlannerView()">Planner</a></li>
+                        <li id="navPhoto"><a href="javascript:showPhotoView()">Picture Collections</a></li>
+                    </ul>
+                     <div class="navbar-brand pull-right" href="#">{{ name }}
+                     <a title="Click to logout" class="link" href="{{ logouturl }}"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></div>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        
+        {% include 'alertview.html' %}
+        {% include 'homeview.html' %}
+
+        <p>
+        {% include 'photoview.html' %}
+        {% include 'plannerview.html' %}
+        </p>
+        
+        {% include 'footer.html' %}
+    </body>
+</html>

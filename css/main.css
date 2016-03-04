@@ -1,0 +1,25 @@
+body {
+  padding-top: 50px;
+}
+.main {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.link {
+	text-decoration: none;
+	color: #999;
+}
+
+.link:hover {
+	text-decoration: none;
+	color: #fff;
+}
+
+.alertArea {
+	top: 60px;
+	left: 0px;
+	position: absolute;
+	z-index: 99;
+	width: 100%;
+}

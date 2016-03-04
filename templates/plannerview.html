@@ -1,0 +1,30 @@
+<div id="plannerView" class="container collapse">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h4>Planners</h4></div>
+        <div class="panel-body">
+            <p>
+                <button type="button" class="btn btn-default" aria-label="Left Align"
+                    id="btnOpenDlgCreatePlanner">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create
+                </button>
+            </p>
+
+            {% if schedules|length == 0 %}
+                    <p> You do not have any planners. </p>
+            {% endif %}
+
+            {% if schedules|length > 0 %}
+                <ul id="listPlanners" class="list-group">
+                    <script>
+                    {% for p in schedules %}
+                    addPlanner("{{ p['key'] }}", "{{ p['creator'] }}", "{{ p['name'] }}", "{{ p['description'] }}", "{{ p['creationdate'] }}");
+                    {% endfor %}
+                    insertPlanners();
+                    </script>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% include 'createPlannerDialog.html' %}
