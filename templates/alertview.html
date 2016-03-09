@@ -8,3 +8,55 @@
         <span id="message"></span>
     </div>
 </div>
+
+<div id="dlgDeleteConfirm" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Delete</h3>
+            </div>
+            <div id="dlgDeleteConfirmMessage" class="modal-body">
+                
+            </div>
+            <div id="dlgDeleteConfirmBtns" class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="Javascript">
+
+function alertShow(oAlert, message, t) {
+	t = t || 2000;
+	oAlert.find('#message').html(message);
+	oAlert.show();
+	oAlert.fadeTo(t, 500).slideUp(500, function(){
+    	oAlert.hide();
+	});
+}
+
+function showError(message) {
+	alertShow($('#alertError'), message, 5000);
+}
+
+function showSuccess(message) {
+	alertShow($('#alertSuccess'), message);
+}
+
+function showDeleteConfirm(msg, yesFn, noFn) {
+	$('#dlgDeleteConfirmMessage').html('<p>' + msg + '</p>');
+	$('#dlgDeleteConfirmBtns').html('<button id="dlgDeleteConfirmBtnCancel" type="button" class="btn btn-default">Cancel</button><button id="dlgDeleteConfirmBtnDelete" type="button" class="btn btn-default btn-danger">Delete</button>');
+
+	$('#dlgDeleteConfirmBtnDelete').click(function() {
+		$('#dlgDeleteConfirmBtnDelete').prop('disabled', true);
+		$('#dlgDeleteConfirm').modal('hide');
+		yesFn && yesFn();
+	});
+	$('#dlgDeleteConfirmBtnCancel').click(function() {
+		$('#dlgDeleteConfirmBtnCancel').prop('disabled', true);
+		$('#dlgDeleteConfirm').modal('hide');
+		noFn && noFn();
+	});
+    $('#dlgDeleteConfirm').modal('show');
+}
+</script>

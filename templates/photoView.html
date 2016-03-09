@@ -1,15 +1,9 @@
 <div id="photoView" class="container collapse">
 	<div class="row">
-	    <div class="col-md-7">
-		    <div class="panel panel-default">
-		        <div class="panel-heading"><h4>Collection</h4></div>
-		        <div class="panel-body">
-	                <ul id="listPhotos" class="list-group">
-	                </ul>
-		        </div>
-		    </div>
+	    <div class="col-md-8">
+			 <div class="row" id="listPhotos"></div>
 		</div>
-		<div class="col-md-5">
+		<div class="col-md-4">
 		    <div class="panel panel-default">
 		        <div class="panel-heading"><h4>Upload</h4></div>
 		        <div class="panel-body">
@@ -20,3 +14,47 @@
 		</div>
 	</div>
 </div>
+
+<script language="Javascript">
+function fetchPhotos(force) {
+    if (!force && photos) {
+        return;
+    }
+    svcGetPhotos(function(data) {
+        $('#listPhotos').html(getPhotosHtml());
+    });
+}
+
+function delPhoto(oBtn, id) {
+    $(oBtn).prop('disabled', true);
+
+    showDeleteConfirm('Do you want to delete the picture?', function() {
+        svcDeletePhoto(id, function() {
+            fetchPhotos(true);
+        });
+    }, function() {
+        $(oBtn).prop('disabled', false);
+    });
+}
+
+$("#fileinput").fileinput({
+    uploadUrl: '/services/photos/',
+    uploadAsync: true,
+    allowedFileExtensions: ['png', 'jpg','jpeg'],
+    maxFileSize: 2500,
+    maxFileCount: 1
+});
+
+$("#fileinput").on('fileuploaded', function() {
+    fetchPhotos(true);
+    setTimeout(function() {
+        $('#fileinput').fileinput('clear');
+    }, 1000);
+});
+
+$('#btnOpenDlgPhoto').on('click', function() {
+    $('#dlgPhotos').modal('show');
+});
+
+
+</script>

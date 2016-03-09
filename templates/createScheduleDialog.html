@@ -1,0 +1,240 @@
+<div id="dlgCreateSchedule" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Create New Activity</h4>
+            </div>
+            <div class="modal-body">
+                <p><h5>Name, Start Time, Duration and Day of week are required</h5></p>
+                <p>
+                    <form>
+                        <div class="form-group">
+                            <label for="scheduleName">Name</label>
+                            <input type="text" class="form-control" id="scheduleName" placeholder="New Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleDescription">Description</label>
+                            <textarea class="form-control" id="scheduleDescription"></textarea>
+                        </div>
+                        <div class="form-group">
+                        <img id="schedulePicture" src="/img/selectPicture.png"
+                            class="img-thumbnail cursor-pointer selectPictureImg" onClick="showPictureSelectorDialog()">
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleHasStartDateLabel">Start Date Turn On</label>
+                            <div id="scheduleHasStartDateLabel" class="make-switch">
+                                <input id="scheduleHasStartDate" type="checkbox" >
+                            </div>
+                        </div>
+                        <div class="form-group" id="scheduleStartDateDiv">
+                            <label for="scheduleStartDate">Start Date: </label>
+                            <input id="scheduleStartDate" readonly="true" />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleStartTime">Start Time: </label>
+                            <input id="scheduleStartTime" readonly="true" />
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleDuration">Duration: </label>
+                            <input id="scheduleDuration" type="number" width="50px" min="5" max="120" step="5" />
+                            Minutes
+                        </div>
+                        <div class="form-group">
+                            <label>Day(s): </label>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input id="day0" type="checkbox" />
+                                    <span>Sunday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day1" type="checkbox" />
+                                    <span>Monday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day2" type="checkbox" />
+                                    <span>Tuesday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day3" type="checkbox" />
+                                    <span>Wednesday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day4" type="checkbox" />
+                                    <span>Thursday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day5" type="checkbox" />
+                                    <span>Friday</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <input id="day6" type="checkbox" />
+                                    <span>Saturday</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnCreateSchedule">Create</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% include 'selectPictureDialog.html' %}
+
+<script language="Javascript">
+
+function todayDate() {
+    var d = new Date();
+    var m = d.getMonth() +1;
+    m = (m < 10) ? '0' + m : '' + m;
+    var dy = d.getDate();
+    dy = (dy < 10) ? '0' + dy : '' + dy;
+
+    return d.getFullYear() + m + dy;
+}
+
+function openCreateScheduleDialog() {
+    $('#scheduleName').val('');
+    $('#scheduleDescription').val('');
+    $('#btnCreateSchedule').prop('disabled', true);
+    
+    $('#schedulePicture').prop('src', '/img/selectPicture.png');
+    $('#scheduleHasStartDate').bootstrapSwitch('state', false);
+    $('#scheduleStartDateDiv').hide();
+    $('#scheduleStartDate').val(todayDate());
+    $('#scheduleStartTime').val('8:00 AM');
+    $('#scheduleDuration').val('30');
+
+    [0, 1, 2, 3, 4, 5, 6].forEach(function(i) {
+        $('#day' + i).removeAttr('checked');
+    })
+
+    $('#dlgCreateSchedule').modal('show');
+
+    setTimeout(function() {
+        $('#scheduleName').focus();   
+    }, 1000);
+}
+
+function showPictureSelectorDialog() {
+    openPictureSelectorDialog();
+}
+
+function getPictureSource() {
+    var src = $('#schedulePicture').prop('src');
+    return src.substring(src.lastIndexOf('/') + 1);
+}
+
+function getStartDate() {
+    if ($('#scheduleHasStartDate').bootstrapSwitch('state')) {
+        return $('#scheduleStartDate').val();
+    }
+    return null;
+}
+
+$('#btnCreateSchedule').on('click', function() {
+    var data = {
+        name: $('#scheduleName').val(),
+        description: $('#scheduleDescription').val(),
+        picture: getPictureSource(),
+        startdate: getStartDate(),
+        starttime: $('#scheduleStartTime').val(),
+        duration: $('#scheduleDuration').val(),
+        day0: $('#day0').is(':checked'),
+        day1: $('#day1').is(':checked'),
+        day2: $('#day2').is(':checked'),
+        day3: $('#day3').is(':checked'),
+        day4: $('#day4').is(':checked'),
+        day5: $('#day5').is(':checked'),
+        day6: $('#day6').is(':checked')
+    };
+
+    if (!data['startdate']) {
+        delete data['startdate'];
+    }
+
+    $.ajax({
+        type: 'post',
+        url: '/services/activities/' + currentPlanner,
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            $('#dlgCreateSchedule').modal('hide');
+            showSuccess('Activity is created');
+
+            // setTimeout(function() {
+            //     fetchPlanners(true);    
+            // }, 1000);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            showError(jqXHR.responseText);
+        }
+    });
+    
+});
+
+function validateScheduleDialog() {
+    var daySelected = false;
+    [0, 1, 2, 3, 4, 5, 6].forEach(function(i) {
+        daySelected |= $('#day' + i).is(':checked');
+    });
+
+    var enable = daySelected &&
+        $('#scheduleName').val().trim() &&
+        !$('#schedulePicture').prop('src').endsWith('/img/selectPicture.png');
+
+    $('#btnCreateSchedule').prop('disabled', !enable);
+}
+
+$('#scheduleName').on('keyup blur',function() {
+    validateScheduleDialog();
+});
+
+$('#scheduleStartDate').datetimepicker({
+    format: 'YYYYMMDD',
+    ignoreReadonly: true
+});
+
+$('#scheduleStartTime').datetimepicker({
+    format: 'LT',
+    ignoreReadonly: true
+});
+
+
+$('#scheduleHasStartDate').bootstrapSwitch('size', 'small');
+$('#scheduleHasStartDate').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state) {
+        $('#scheduleStartDateDiv').show();
+    } else {
+        $('#scheduleStartDateDiv').hide();
+    }
+});
+
+[0, 1, 2, 3, 4, 5, 6].forEach(function(i) {
+    $('#day' + i).on('click', function() {
+        validateScheduleDialog();
+    })
+});
+
+$('#schedulePicture').on('load', function() {
+    validateScheduleDialog();
+});
+
+$('#scheduleDuration').on('change', function(){
+    var v = parseInt($(this).val(), 10);
+    if (isNaN(v)) {
+        $(this).val('30');
+    } else if (v < 1) {
+        $(this).val('1');
+    } else if (v > 120) {
+        $(this).val('120');
+    }
+})
+
+</script>

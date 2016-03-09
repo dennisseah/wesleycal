@@ -13,6 +13,37 @@
             </ul>
         </div>
     </div>
+{% include 'createPlannerDialog.html' %}
+{% include 'overlayPlannerEdit.html' %}
+
 </div>
 
-{% include 'createPlannerDialog.html' %}
+
+<script language="Javascript">
+
+$('#btnOpenDlgCreatePlanner').on('click', function() {
+    openCreatePlannerDialog();
+});
+
+function fetchPlanners(force) {
+    if (!force && planners) {
+        return;
+    }
+    svcGetPlanners(function() {
+        $('#listPlanners').html(getPlannersHtml());
+    });
+}
+
+function delPlanner(oBtn, id) {
+    $(oBtn).prop('disabled', true);
+
+    showDeleteConfirm('Do you want to delete the planner?', function() {
+        svcDeletePlanner(id, function() {
+            fetchPlanners(true); 
+        });
+    }, function() {
+        $(oBtn).prop('disabled', false);
+    });
+}
+
+</script>
