@@ -32,6 +32,16 @@
                             <input id="scheduleStartDate" readonly="true" />
                         </div>
                         <div class="form-group">
+                            <label for="scheduleHasEndDateLabel">End Date Turn On</label>
+                            <div id="scheduleHasEndDateLabel" class="make-switch">
+                                <input id="scheduleHasEndDate" type="checkbox" >
+                            </div>
+                        </div>
+                        <div class="form-group" id="scheduleEndDateDiv">
+                            <label for="scheduleEndDate">End Date: </label>
+                            <input id="scheduleEndDate" readonly="true" />
+                        </div>
+                        <div class="form-group">
                             <label for="scheduleStartTime">Start Time: </label>
                             <input id="scheduleStartTime" readonly="true" />
                         </div>
@@ -89,15 +99,7 @@
 
 <script language="Javascript">
 
-function todayDate() {
-    var d = new Date();
-    var m = d.getMonth() +1;
-    m = (m < 10) ? '0' + m : '' + m;
-    var dy = d.getDate();
-    dy = (dy < 10) ? '0' + dy : '' + dy;
 
-    return d.getFullYear() + m + dy;
-}
 
 function openCreateScheduleDialog() {
     $('#scheduleName').val('');
@@ -106,8 +108,14 @@ function openCreateScheduleDialog() {
     
     $('#schedulePicture').prop('src', '/img/selectPicture.png');
     $('#scheduleHasStartDate').bootstrapSwitch('state', false);
+    $('#scheduleHasEndDate').bootstrapSwitch('state', false);
+
     $('#scheduleStartDateDiv').hide();
-    $('#scheduleStartDate').val(todayDate());
+    $('#scheduleEndDateDiv').hide();
+
+    $('#scheduleStartDate').val(currentDay);
+    $('#scheduleEndDate').val(currentDay);
+    
     $('#scheduleStartTime').val('8:00 AM');
     $('#scheduleDuration').val('30');
 
@@ -138,12 +146,20 @@ function getStartDate() {
     return null;
 }
 
+function getEndDate() {
+    if ($('#scheduleHasEndDate').bootstrapSwitch('state')) {
+        return $('#scheduleEndDate').val();
+    }
+    return null;
+}
+
 $('#btnCreateSchedule').on('click', function() {
     var data = {
         name: $('#scheduleName').val(),
         description: $('#scheduleDescription').val(),
         picture: getPictureSource(),
         startdate: getStartDate(),
+        enddate: getEndDate(),
         starttime: $('#scheduleStartTime').val(),
         duration: $('#scheduleDuration').val(),
         day0: $('#day0').is(':checked'),
@@ -158,6 +174,10 @@ $('#btnCreateSchedule').on('click', function() {
     if (!data['startdate']) {
         delete data['startdate'];
     }
+    if (!data['enddate']) {
+        delete data['enddate'];
+    }
+
 
     $.ajax({
         type: 'post',
@@ -168,9 +188,9 @@ $('#btnCreateSchedule').on('click', function() {
             $('#dlgCreateSchedule').modal('hide');
             showSuccess('Activity is created');
 
-            // setTimeout(function() {
-            //     fetchPlanners(true);    
-            // }, 1000);
+            setTimeout(function() {
+                navDay();    
+            }, 1000);
         },
         error: function(jqXHR, textStatus, errorThrown){
             showError(jqXHR.responseText);
@@ -201,6 +221,12 @@ $('#scheduleStartDate').datetimepicker({
     ignoreReadonly: true
 });
 
+$('#scheduleEndDate').datetimepicker({
+    format: 'YYYYMMDD',
+    ignoreReadonly: true
+});
+
+
 $('#scheduleStartTime').datetimepicker({
     format: 'LT',
     ignoreReadonly: true
@@ -215,6 +241,16 @@ $('#scheduleHasStartDate').on('switchChange.bootstrapSwitch', function(event, st
         $('#scheduleStartDateDiv').hide();
     }
 });
+
+$('#scheduleHasEndDate').bootstrapSwitch('size', 'small');
+$('#scheduleHasEndDate').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state) {
+        $('#scheduleEndDateDiv').show();
+    } else {
+        $('#scheduleEndDateDiv').hide();
+    }
+});
+
 
 [0, 1, 2, 3, 4, 5, 6].forEach(function(i) {
     $('#day' + i).on('click', function() {

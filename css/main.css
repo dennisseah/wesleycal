@@ -30,6 +30,11 @@ body {
     font-size: 1.5rem;
 }
 
+.afternoon {
+    background-color: orange !important;
+    border-color: orange !important;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
@@ -39,7 +44,6 @@ body {
 }
 
 .modal-body {
-    max-height: calc(200vh - 50px);
     overflow-y: auto;
 }
 
@@ -47,6 +51,9 @@ body {
     height: 100px;
 }
 
+.dayactivityphoto {
+    height: 150px;   
+}
 
 .thumbnail {
     position:relative;

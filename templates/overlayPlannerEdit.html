@@ -13,34 +13,20 @@
 					    Add New
 					</button>
                 </p>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-				</div>
-				<div class="list-group">
-				    <a class="list-group-item planner-cal-header active">Sunday</a>
-				    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>				  
-				</div>
+                <hr>
+		      	    <button type="button" class="btn btn-default" onClick="navDay(-1)"  
+		      	    	data-toggle="tooltip" aria-label="Yesterday" data-placement="top" title="Yesterday">
+		      	    	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					</button>
+		      	    <button type="button" class="btn btn-default" onClick="navDay(1)" 
+		      	    	data-toggle="tooltip" aria-label="Tomorrow" data-placement="top" title="Tomorrow">
+					    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					</button>
+                
+                <h4 id="headerEditDay"></h4>
+                <hr>
+                <div id="contentEditDay">
+				<div>
 	      	</div>
 		    <!-- <div class="modal-footer">
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -51,3 +37,55 @@
 
 {% include 'createScheduleDialog.html' %}
 
+<script language="Javascript">
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+function setEditPlannerContent() {
+	var amtemplate = '<div class="list-group"> \
+	    <a class="list-group-item planner-cal-header active">@Time@ : @ACTIVITIES@</a> \
+	    <div class="list-group-item">@DESCRIPTION@<br> \
+	    <img src="/services/photo/@@PICTURE@@" class="dayactivityphoto" alt="@@ACTIVITIES@@"></div> \
+	    </div> \
+	</div>';
+	var pmtemplate = '<div class="list-group"> \
+	    <a class="list-group-item planner-cal-header active afternoon">@Time@ : @ACTIVITIES@</a> \
+	    <div class="list-group-item">@DESCRIPTION@<br> \
+	    <img src="/services/photo/@@PICTURE@@" class="dayactivityphoto" alt="@@ACTIVITIES@@"></div> \
+	    </div> \
+	</div>';
+	var buff = '';
+
+	dayactivities.forEach(function(a) {
+		var t = a.starttime.indexOf('AM') === -1 ? pmtemplate : amtemplate;
+		buff += t.replace('@Time@', a.starttime).replace(
+			/@ACTIVITIES@/g, a.name).replace(
+			/@DESCRIPTION@/g, a.description).replace(
+			/@PICTURE@/g, a.picture);
+	});
+	$('#contentEditDay').html(buff);
+
+	if (buff === '') {
+		$('#contentEditDay').html('<p>There are no activities</p>');		
+	}
+	
+}
+
+function navDay(d) {
+	d = d || 0;
+	var date = moment(currentDay, 'YYYYMMDD');
+	date.add(moment.duration(d, 'd'));
+	navPlanner(parseInt(date.format('YYYYMMDD'), 10));
+}
+
+function navPlanner(d) {
+	currentDay = d;
+	$('#contentEditDay').html('');
+	$('#headerEditDay').html(getDisplayDate(currentDay));
+	svcGetDayActivities(currentPlanner, d, function() {
+		setEditPlannerContent();
+	});
+}
+</script>

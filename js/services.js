@@ -1,5 +1,6 @@
 var photos = null;
 var planners = null;
+var dayactivities = null;
 
 if (typeof String.prototype.endsWith !== 'function') {
     String.prototype.endsWith = function(suffix) {
@@ -80,6 +81,22 @@ function svcDeletePlanner(id, fn) {
             setTimeout(function() {
                 fn && fn();
             }, 500);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            showError(textStatus);
+        }
+    });
+}
+
+
+function svcGetDayActivities(id, d, fn) {
+    $.ajax({
+        type: 'get',
+        url: '/services/dayactivities/' + id + '/' + d,
+        dataType: 'json',
+        success: function (data) {
+            dayactivities = data;
+            fn && fn();
         },
         error: function(jqXHR, textStatus, errorThrown){
             showError(textStatus);

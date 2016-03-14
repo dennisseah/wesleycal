@@ -67,4 +67,7 @@ function editPlanner(key, name) {
 	currentPlanner = key;
 	$('#dlgEditPlanner').modal('show');
 	$('#headerEditPlanner').html(name);
+    navPlanner(currentDay);
+	// $('#headerEditDay').html(getDisplayDate(currentDay));
 }
+

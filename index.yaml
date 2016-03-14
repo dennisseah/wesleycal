@@ -13,6 +13,78 @@ indexes:
 - kind: ActivityEntry
   properties:
   - name: creator
+  - name: day0
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day1
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day2
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day3
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day4
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day5
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day6
+  - name: enddate
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day6
+  - name: planner
+  - name: startdate
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day6
+  - name: planner
+  - name: startdate
+  - name: starttime
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
+  - name: day6
+  - name: planner
+  - name: starttime
+
+- kind: ActivityEntry
+  properties:
+  - name: creator
   - name: starttime
 
 - kind: ActivityEntry
